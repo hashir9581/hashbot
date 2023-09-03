@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+# USAGE
+import rospy
+import tf
+import geometry_msgs.msg
+import math
+import numpy as np
+from sensor_msgs.msg import LaserScan
+
+class rtod_tf(object):
+	def __init__(self):
+	    self.data=None
+	    rate = rospy.Rate(1)
+	    sub = rospy.Subscriber('/scan', LaserScan, self.callback)
+	    rate.sleep()
+	    
+	    #rospy.loginfo("i heard %s",(data))
+
+	def callback(self,msg):
+	    self.data=msg.ranges;
+	    #rospy.loginfo("i heard %s",(self.data))
+
+
+	def get_data(self):
+	    return self.data
+
+def obj2map(scandata,label, startx, endx):
+    br = tf.TransformBroadcaster()
+    val=(endx+startx)/2
+    ad=np.interp(val,[10,390],[56,-56])
+    ang=int(ad*2)
+    print(ad, ang)
+    d=scandata[ang]
+    print(ad, d, ang)
+    a=ad * math.pi / 180
+    x=-d*math.cos(a)
+    y=d*math.sin(a)
+    br.sendTransform((x,y,0),tf.transformations.quaternion_from_euler(0, 0, 0),rospy.Time.now(),label,"base_link")
+	    
+    
+
+
+if __name__ == '__main__':
+    rospy.init_node('fixed_tf2_broadcaster')
+    rospy.loginfo("Node has been started")
+
+
+    while not rospy.is_shutdown():
+        my_node=rtod_tf()
+        dataout=my_node.get_data()
+        dataout=np.array(dataout)
+        dataout[dataout==np.inf]=0
+	idx=1
+        obj2map(dataout,"sofa"+str(idx), 30,50)
+        obj2map(dataout,"chairs"+str(idx), 70,90)
+        obj2map(dataout,"tv"+str(idx), 100,120)
+        obj2map(dataout,"person"+str(idx), 150,170)
+        obj2map(dataout,"fan"+str(idx), 200,250)
+        

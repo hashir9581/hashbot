@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+# USAGE
+import rospy
+from sensor_msgs.msg import LaserScan
+
+def callback(msg):
+    print(msg.ranges[-170], msg.ranges[-171], msg.ranges[-172], msg.ranges[-173], msg.ranges[-174], msg.ranges[-175], msg.ranges[-176], msg.ranges[-177], msg.ranges[-178], msg.ranges[-179], msg.ranges[-180])
+
+
+rospy.init_node('scan_values')
+sub = rospy.Subscriber('/scan', LaserScan, callback)
+rospy.spin()
