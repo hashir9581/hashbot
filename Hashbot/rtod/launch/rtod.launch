@@ -1,3 +1,0 @@
-<launch>
-  <node name="rtod" pkg="rtod" type="rtod" cwd="node" output="screen"/>
-</launch>
