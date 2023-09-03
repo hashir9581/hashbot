@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="set_lidar_frame_id" default="base_scan"/>
+
+  <include file="$(find startup)/launch/hashbot_core.launch"/>
+  <include file="$(find startup)/launch/hashbot_lidar.launch">
+    <arg name="set_frame_id" value="$(arg set_lidar_frame_id)"/>
+  </include>
+
+</launch>
